@@ -8,7 +8,7 @@ const authenticateToken = (req, res, next) => {
 
     if (token == null) return res.status(401).json({ message: 'Token required' });
 
-    jwt.verify(token, 'your_jwt_secret_key', (err, user) => {
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
         if (err) return res.status(403).json({ message: 'Forbidden' });
 
         req.user = user; // Add the user info to the request object

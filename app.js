@@ -8,7 +8,7 @@ const specializationRoute = require('./routes/specialization');
 const authenticateToken = require('./middleware/authMiddleware'); // Import the middleware
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 
 // Middleware to parse JSON
 app.use(express.json());
@@ -22,12 +22,17 @@ sql.connect(config.sql).then(() => {
 
 // Public routes
 app.use('/api/register', registerRoute);
-
 app.use('/api/login', loginRoute);
 
 // Protected routes
 app.use('/api/patients', authenticateToken, patientsRoute);
 app.use('/api/specialization', authenticateToken, specializationRoute);
+
+// Global error handler
+app.use((err, req, res, next) => {
+  console.error('Global Error:', err.message);
+  res.status(500).json({ message: 'Internal server error' });
+});
 
 // Start the server
 app.listen(PORT, () => {

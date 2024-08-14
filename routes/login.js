@@ -5,10 +5,7 @@ const sql = require('mssql');
 const config = require('../config');
 const router = express.Router();
 
-router.post('/',  (req, res, next) => {
-    console.log('Login route POST request received');
-    next(); },
-    async (req, res) => {
+router.post('/', async (req, res) => {
     const { username, password } = req.body;
 
     try {
@@ -23,12 +20,14 @@ router.post('/',  (req, res, next) => {
 
         const user = result.recordset[0];
 
+        // Compare the provided password with the stored hashed password
         const isMatch = await bcrypt.compare(password, user.Password);
         if (!isMatch) {
             return res.status(400).json({ message: 'Invalid credentials' });
         }
 
-        const token = jwt.sign({ username: user.Username }, 'your_jwt_secret_key', { expiresIn: '1h' });
+        // Create a JWT token with the user's ID and username
+        const token = jwt.sign({ id: user.ID, username: user.Username }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
         res.json({ token });
     } catch (err) {

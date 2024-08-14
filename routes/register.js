@@ -9,22 +9,24 @@ router.post('/', async (req, res) => {
 
     try {
         let pool = await sql.connect(config.sql);
-        const result = await pool.request()
+        const userResult = await pool.request()
             .input('username', sql.VarChar, username)
             .query('SELECT * FROM Users WHERE Username = @username');
 
-        if (result.recordset.length > 0) {
+        if (userResult.recordset.length > 0) {
             return res.status(400).json({ message: 'User already exists' });
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        await pool.request()
+        const insertUserResult = await pool.request()
             .input('username', sql.VarChar, username)
             .input('password', sql.VarChar, hashedPassword)
-            .query('INSERT INTO Users (Username, Password) VALUES (@username, @password)');
+            .query('INSERT INTO Users (Username, Password) OUTPUT INSERTED.ID VALUES (@username, @password)');
 
-        res.status(201).json({ message: 'User registered successfully' });
+        const userID = insertUserResult.recordset[0].ID;
+
+        res.status(201).json({ message: 'User registered successfully', userID });
     } catch (err) {
         console.error('Error:', err.message);
         res.status(500).json({ message: 'Server error' });

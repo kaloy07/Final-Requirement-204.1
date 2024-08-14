@@ -1,16 +1,22 @@
 const express = require('express');
 const sql = require('mssql');
 const config = require('../config');
+const authenticateToken = require('../middleware/authMiddleware'); // Import your authentication middleware
 const router = express.Router();
 
-router.get('/', async (req, res) => {
-    console.log('Specialization route GET request received'); 
+// Protected route to get specializations
+router.get('/', authenticateToken, async (req, res) => {
+    console.log('Specialization route GET request received');
     try {
-      const result = await sql.query('SELECT SpecializationID, Specialization FROM Specialization_Dim');
-      res.json(result.recordset);
+        let pool = await sql.connect(config.sql);
+        const result = await pool.request()
+            .query('SELECT SpecializationID, Specialization FROM Specialization_Dim');
+        
+        res.json(result.recordset);
     } catch (err) {
-      res.status(500).send('Error fetching data from database');
+        console.error('Error:', err.message); // Log the error for debugging
+        res.status(500).send('Error fetching data from database');
     }
-  });
+});
 
 module.exports = router;
