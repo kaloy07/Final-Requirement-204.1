@@ -24,7 +24,7 @@ const authenticate = (req, res, next) => {
 // POST API to insert a new patient
 router.post('/', async (req, res) => {
     try {
-        const { FirstName, LastName, Gender, BirthDate, ContactInfo, Address, UserID } = req.body;
+        const { FirstName, LastName, Gender, BirthDate, ContactInfo, Address, UserID, InsuranceCoverage } = req.body;
         let pool = await sql.connect(config);
 
         const result = await pool.request()
@@ -35,9 +35,10 @@ router.post('/', async (req, res) => {
             .input('ContactInfo', sql.VarChar, ContactInfo)
             .input('Address', sql.VarChar, Address)
             .input('UserID', sql.Int, UserID)
-            .query(`INSERT INTO Patients_Dim (FirstName, LastName, Gender, BirthDate, ContactInfo, Address, UserID)
+            .input('InsuranceCoverage', sql.VarChar, InsuranceCoverage)
+            .query(`INSERT INTO Patients_Dim (FirstName, LastName, Gender, BirthDate, ContactInfo, Address, UserID, InsuranceCoverage)
                     OUTPUT INSERTED.PatientID
-                    VALUES (@FirstName, @LastName, @Gender, @BirthDate, @ContactInfo, @Address, @UserID)`);
+                    VALUES (@FirstName, @LastName, @Gender, @BirthDate, @ContactInfo, @Address, @UserID, @InsuranceCoverage)`);
 
         res.status(201).json({ message: 'Patient added successfully', patientID: result.recordset[0].PatientID });
     } catch (err) {

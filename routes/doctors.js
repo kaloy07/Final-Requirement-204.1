@@ -14,7 +14,7 @@ router.get('/:specializationID', authenticateToken, async (req, res) => {
         let pool = await sql.connect(config.sql);
         const result = await pool.request()
             .input('specializationID', sql.VarChar, specializationID)
-            .query('SELECT DoctorID, FirstName, LastName, Gender, SpecializationID, ContactInfo, IsAvailableToday FROM Doctors_Dim WHERE SpecializationID = @specializationID');
+            .query('SELECT DoctorID, FirstName, LastName, Gender, SpecializationID, ContactInfo, IsAvailableToday, ConsultationFee FROM Doctors_Dim WHERE SpecializationID = @specializationID');
         
         if (result.recordset.length > 0) {
             res.json(result.recordset);
