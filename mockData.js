@@ -47,6 +47,35 @@ const fetchProfileResponse = {
     UserID: 3
 };
 
+const fetchDoctorsInfoRequest = {
+    method: 'GET',
+    url: 'api/doctors/:specializationID', //ex. /api/doctors/SP001
+    headers: {
+      'Authorization': 'Bearer <JWT_Token>'
+    }
+}
+
+const fetchDoctorsInfoResponse = [
+        {
+            "DoctorID": "DR0001",
+            "FirstName": "John",
+            "LastName": "Doe",
+            "Gender": "M",
+            "SpecializationID": "SP001",
+            "ContactInfo": "john.doe@example.com",
+            "IsAvailableToday": true
+        },
+        {
+            "DoctorID": "DR0011",
+            "FirstName": "Sophia",
+            "LastName": "Thomas",
+            "Gender": "F",
+            "SpecializationID": "SP001",
+            "ContactInfo": "sophia.thomas@example.com",
+            "IsAvailableToday": true
+        }
+]
+
 const specializations = [
     {
         "SpecializationID": "SP001",
