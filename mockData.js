@@ -47,6 +47,29 @@ const fetchProfileResponse = {
     UserID: 3
 };
 
+const SetAppointmentRequest = {
+    method: 'POST',
+    url: 'api/appointments/set',
+    headers: {
+        'Authorization': 'Bearer <JWT_Token>'
+    },
+    body :
+    {
+        "PatientID": "P0004",
+        "DoctorID": "DR0001",
+        "SpecializationID": "SP001",
+        "AppointmentDate": "2024-08-27T10:00:00"
+    }
+}
+
+const SetAppointmentResponse = {
+        "message": "Appointment set successfully",
+        "AppointmentDate": "2024-08-29T02:00:00.000Z",
+        "DoctorID": "DR0011",
+        "DoctorsName": "Sophia Thomas",
+        "BillingID": "BL012"
+}
+
 const fetchDoctorsInfoRequest = {
     method: 'GET',
     url: 'api/doctors/:specializationID', //ex. /api/doctors/SP001
@@ -235,7 +258,7 @@ const specializations = [
     }
 ]
 
-let patientProfile = [
+const patientProfile = [
     {
         "ID": 1,
         "PatientID": "P0001",
@@ -250,6 +273,7 @@ let patientProfile = [
     }
 
 ]
+
 
 module.exports = {
     registerRequest,
