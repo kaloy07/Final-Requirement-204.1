@@ -7,10 +7,11 @@ const patientsRoute = require('./routes/patients');
 const specializationRoute = require('./routes/specialization');
 const doctorRoutes = require('./routes/doctors');
 const appointmentRoute = require('./routes/appointment');
-const authenticateToken = require('./middleware/authMiddleware'); // Import the middleware
+const authenticateToken = require('./middleware/authMiddleware');
+const cors = require('cors');
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3000;
 
 // Middleware to parse JSON
 app.use(express.json());
@@ -21,6 +22,13 @@ sql.connect(config.sql).then(() => {
 }).catch(err => {
   console.error('Database connection failed:', err);
 });
+
+const corsOptions = {
+  origin: 'http://localhost:8100',
+  optionsSuccessStatus: 200 
+};
+
+app.use(cors(corsOptions));
 
 // Public routes
 app.use('/api/register', registerRoute);
