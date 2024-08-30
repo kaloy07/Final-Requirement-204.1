@@ -52,4 +52,24 @@ router.post('/set', authenticateToken, async (req, res) => {
     }
 });
 
+// New route to fetch all appointments
+router.get('/all', authenticateToken, async (req, res) => {
+    console.log('Appointment route GET request received to fetch all appointments');
+    
+    try {
+        let pool = await sql.connect(config.sql);
+        const result = await pool.request()
+            .query('SELECT * FROM Appointment_Fact');
+        
+        if (result.recordset.length > 0) {
+            res.json(result.recordset);
+        } else {
+            res.status(404).json({ message: 'No appointments found' });
+        }
+    } catch (err) {
+        console.error('Error:', err.message); // Log the error for debugging
+        res.status(500).send('Error fetching appointments from database');
+    }
+});
+
 module.exports = router;

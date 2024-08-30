@@ -7,6 +7,7 @@ const patientsRoute = require('./routes/patients');
 const specializationRoute = require('./routes/specialization');
 const doctorRoutes = require('./routes/doctors');
 const appointmentRoute = require('./routes/appointment');
+const billingRoutes = require('./routes/billing');
 const authenticateToken = require('./middleware/authMiddleware');
 const cors = require('cors');
 
@@ -24,7 +25,7 @@ sql.connect(config.sql).then(() => {
 });
 
 const corsOptions = {
-  origin: 'http://localhost:8100',
+  origin: ['http://localhost:8100', 'http://localhost/'],
   optionsSuccessStatus: 200 
 };
 
@@ -38,7 +39,8 @@ app.use('/api/login', loginRoute);
 app.use('/api/patients', authenticateToken, patientsRoute);
 app.use('/api/specialization', authenticateToken, specializationRoute);
 app.use('/api/doctors', authenticateToken, doctorRoutes);
-app.use('/api/appointments', authenticateToken, appointmentRoute)
+app.use('/api/appointments', authenticateToken, appointmentRoute);
+app.use('/api/billing', authenticateToken, billingRoutes);
 
 // Global error handler
 app.use((err, req, res, next) => {
