@@ -52,19 +52,38 @@ router.post('/set', authenticateToken, async (req, res) => {
     }
 });
 
-// New route to fetch all appointments
-router.get('/all', authenticateToken, async (req, res) => {
-    console.log('Appointment route GET request received to fetch all appointments');
+// Route to fetch all appointments by UserID
+router.get('/user/:userID', authenticateToken, async (req, res) => {
+    const { userID } = req.params;
+
+    console.log('Fetch appointments route GET request received for userID:', userID);
     
     try {
         let pool = await sql.connect(config.sql);
         const result = await pool.request()
-            .query('SELECT * FROM Appointment_Fact');
+            .input('userID', sql.Int, userID)
+            .query(`
+                SELECT 
+                    a.AppointmentID, 
+                    a.PatientID, 
+                    a.DoctorID, 
+                    a.SpecializationID, 
+                    a.BillingID, 
+                    a.AppointmentDate
+                FROM 
+                    Appointment_Fact a
+                INNER JOIN 
+                    Patients_Dim p ON a.PatientID = p.PatientID
+                WHERE 
+                    p.UserID = @userID
+                ORDER BY 
+                    a.AppointmentDate DESC
+            `);
         
         if (result.recordset.length > 0) {
             res.json(result.recordset);
         } else {
-            res.status(404).json({ message: 'No appointments found' });
+            res.status(404).json({ message: 'No appointments found for this UserID' });
         }
     } catch (err) {
         console.error('Error:', err.message); // Log the error for debugging
