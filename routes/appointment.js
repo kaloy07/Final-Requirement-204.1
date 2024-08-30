@@ -69,11 +69,14 @@ router.get('/user/:userID', authenticateToken, async (req, res) => {
                     a.DoctorID, 
                     a.SpecializationID, 
                     a.BillingID, 
-                    a.AppointmentDate
+                    a.AppointmentDate,
+                    CONCAT(d.FirstName, ' ', d.LastName) AS DoctorName
                 FROM 
                     Appointment_Fact a
                 INNER JOIN 
                     Patients_Dim p ON a.PatientID = p.PatientID
+                INNER JOIN 
+                    Doctors_Dim d ON a.DoctorID = d.DoctorID
                 WHERE 
                     p.UserID = @userID
                 ORDER BY 
