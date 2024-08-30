@@ -25,7 +25,7 @@ sql.connect(config.sql).then(() => {
 });
 
 const corsOptions = {
-  origin: ['http://localhost:8100', 'http://localhost/'],
+  origin: ['http://localhost:8100', 'https://localhost/'],
   optionsSuccessStatus: 200 
 };
 
